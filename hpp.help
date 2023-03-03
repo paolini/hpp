@@ -1,0 +1,87 @@
+%string:
+	- sequenza di caratteri non spazi ne' > ne' "
+	- si possono mettere tra virgolette parti di stringa
+	- i caratteri preceduti da \ non vengono interpretati
+
+TAG:
+
+I tag sono della forma
+
+	< %name [%name|%name=%string ...] > 
+
+	Gli assegnamenti label=%label vengono usati per accoppiare un tag 
+	<TAG label=%label> con il corrispettivo </TAG label=%label>.
+	Le opzioni contrassegnate con %stuff vengono ignorate.	
+	
+	<nospace [%stuff]>
+		Vengono tolti gli spazi dopo il TAG.	
+		%stuff viene ignorato
+
+	<ignore [label=%label] [%stuff]>%body</ignore [label=%label]>
+		%body viene saltato a pie' pari
+
+	<literal [label=%label] [%stuff]>%body</literal [label=%label]>
+		%body viene riportato senza ulteriori espansioni
+
+	<set [%var=%value ...]>
+		Assegna alla variabile var il valore value
+	<set %var1 [%var=%value ...] [label=%label]>%body</set [label=%label]>
+		Oltre a fare gli assegnamenti come prima assegna
+		alla variabile var1 il valore %body
+	<set unset %var>
+		Rende la variabile %var non definita.
+		
+	<use %name [%var=%value ...]>
+		Espande il valore della variabile %name in un nuovo ambiente
+		con le variabili %var settate ai valori %value.
+		
+	<if [not] %expr [label=%label]> %body1
+	[ <else [label=%label> %body2 ]
+	</if [label=%label]>
+		Espande %body1 se %expr e' vera altrimenti se c'e' 
+		espande %body2. Se il "not" e' presente fa il contrario.
+		%expr puo' essere:
+			%name
+				vero se %name e' il nome di una variabile
+			%value1=%value2
+				vero se %value1=%value2
+	
+	<foreach %name [%value ...] [label=%label> %body 
+	</foreach [label=%label]>
+		Per ogni valore %value valuta %body in un nuovo ambiente
+		in cui la variabile %name ha valore %value. In piu' nel
+		nuovo ambiente le variabili first e last sono definite
+		solo per il primo rispettivamente ultimo valore della lista.
+	
+	<env [global]>
+		Inserisce i valori delle variabili del corrente ambiente (o 
+		anche di quello globale in <env global>) nella forma
+		%name=%value ...
+	
+	<file [input=%file|output=%file]>
+		Se e' presente input=%file inserisce il file %file nel buffer
+		corrente e lo interpreta.
+		Se e' presente output=%file scrive l'intero contenuto del 
+		buffer corrente sul file %file
+		Se %file=|%command viene eseguito il comando %command
+		che viene usato come input o output
+
+	<message [msg=%message|err=%error|%message]>
+		Stampa su video (stderr) il messaggio %message oppure
+		stampa %error e esce.
+	
+	<stat [path][base][ext][min][max][file=%file][date][format=%format]>
+		Viene rimpiazzato dal nome del file %file (se c'e' base), dal 
+		path e/o dall'estensione (se ci sono path e ext).
+		Se min l'estensione e' considerata la piu' piccola possibile
+		se c'e' max la piu' grande.
+		Se c'e' date viene stampata la data dell'ultima modifica
+		del file %file o la data corrente se %file non e' specificato.
+		%format serve a formattare la data (vedi strftime).
+	
+	<process %stuff [label=%label]> %body </process [label=%label]>
+		Viene creato un nuovo ambiente figlio dell'attuale, che viene
+		associato ad un nuovo buffer contenente %body.
+		Nel buffer corrente l'intero <process>...</process> viene
+		eliminato.
+	

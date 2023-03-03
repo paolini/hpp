@@ -1,0 +1,29 @@
+hpp: manu-fatto
+
+DESCRIPTION:
+
+hpp is a simple text preprocessor with particular aim at html documents.
+
+INSTALLATION:
+
+1. obtain the package hpp-*.tgz (where * is the version number).
+2. decompress it
+	tar -xzf hpp-*.tgz
+3. enter the source directory
+	cd hpp-*
+4. compile
+	make
+this creates the executable "hpp". Copy it in your preferred directory.
+For system-wide installation do the following step.
+5. install (optional)
+	su
+	make install
+	
+USAGE:
+
+The only documentation can be found in the file "usage.html" of the package.
+This is currently only available in italian.
+
+
+
+

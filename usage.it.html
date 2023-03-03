@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//it">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rev="made" title="Emanuele Paolini" href="mailto:paolini@sns.it">
+<title>Emanuele Paolini: hpp: Istruzioni</title>
+</head>
+<body lang="it" bgcolor="#60C0Ff">
+<div align=right bgcolor="#0000ff">
+<a href="http://web.math.unifi.it/users/paolini/"><img src="http://web.math.unifi.it/users/paolini/home.png" alt=Home border=0></a><a href="../"><img src="http://web.math.unifi.it/users/paolini/up.png" alt=Up border=0></a><a href="http://web.math.unifi.it/users/paolini/help/"><img src="http://web.math.unifi.it/users/paolini/help.png" alt="Aiuto!" border=0></a>
+  
+    <img src="http://web.math.unifi.it/users/paolini/it.png" alt="it"; border=0>
+  
+
+</div>
+<hr>
+<h1 align=center>hpp: Istruzioni</h1>
+
+Hpp &egrave; un preprocessore di testi, orientato alla scrittura di documenti HTML.
+
+<h2> Comandi </h2>
+
+La sintassi per i comandi riconosciuti da HPP assomiglia ai TAG
+dell'HTML:
+<p><pre>
+&lt;TAG <var>name</var>=<var>value</var> <var>[...]</var> &gt;
+</pre><p>
+
+Alcuni comandi prevedono un TAG di chiusura che, come in HTML, &egrave;
+dato dal nome del comando  preceduto dal carattere '/'.
+In questo caso la parte di testo compresa tra il TAG di apertura e il
+TAG di chiusura viene interpretato dal comando.
+All'interno del blocco di testo di un comando ci possono naturalmente
+essere "annidiati" altri comandi. 
+
+<h3> Elenco dei comandi </h3>
+<ul>
+<p><li>
+<p><pre>&lt;NOSPACE&gt;</pre><p>
+Elimina tutti gli spazi (cio&egrave; spazio, tab e andata a capo) che
+seguono il TAG. 
+
+<p><li>
+<p><pre>&lt;IGNORE&gt; <var>testo</var> &lt;/IGNORE&gt; </pre><p>
+Elimina il <tt><var>testo</var></tt>.
+
+<p><li>
+<p><pre>&lt;LITERAL&gt; <var>testo</var> &lt;/LITERAL&gt; </pre><p>
+Inserisce il <tt><var>testo</var></tt> senza espanderlo
+ulteriormente.
+
+<p><li>
+<p><pre>&lt;SET <var>name</var>=<var>value</var><var>[...]</var>&gt;</pre><p>
+<p><pre>&lt;SET <var>name</var>&gt;<var> testo </var>&lt;/SET&gt;</pre><p>
+Nella prima forma
+setta la variabile <tt><var>name</var></tt> al valore <tt><var>value</var></tt>. Nello
+stesso TAG possono essere presenti pi&ugrave; di un assegnamento.
+Nella seconda forma setta la variabile (ovvero la macro)
+<tt><var>name</var></tt> al valore <tt><var>testo</var></tt>.
+
+<p><li>
+<p><pre>&lt;DEF <var>name</var>&gt; <var>testo</var> &lt;/DEF&gt;</pre><p>
+Questo comando &egrave; equivalente al comando <tt>SET</tt> a parte il
+fatto che la macro risultante pu&ograve; essere usata direttamente con il
+comando <tt>&lt;<var>name ...</var>&gt;</tt> senza dover usare il
+costrutto <tt>&lt;USE <var>name ...</var>&gt;</tt>. Inoltre se
+oltre alla macro <tt><var>name</var></tt> esiste anche la macro <tt>/<var>name</var></tt>, quando nel buffer viene trovato il comando
+<tt>&lt;<var>name...</var>&gt;</tt>, viene cercato il tag
+corrispondente <tt>&lt;/<var>name...</var>&gt;</tt>, quindi viene
+inserito in un nuovo buffer 
+il valore della macro <tt><var>name</var></tt>, il
+testo compreso tra i due TAG e infine il valore della macro
+<tt>/<var>name</var></tt>. Dunque entrambe le macro vengono espanse
+nello stesso ambiente, cosicch&egrave; anche nell'espansione della seconda
+macro sono visibili le variabili passate alla prima macro.
+
+<p><li>
+<p><pre>&lt;USE <var>name</var> <var>arg</var>=<var>value</var><var>[...]</var>&gt;</pre><p>
+
+Copia il valore della variabile (o macro) <tt><var>name</var></tt> in un nuovo
+buffer, e associa al buffer un
+nuovo ambiente "figlio" in cui vengono settate le variabili
+<tt><var>arg</var></tt> ai valori <tt><var>value</var></tt>.
+Quindi il testo della macro viene espanso e il buffer risultate viene
+rinserito al posto del TAG.
+
+<p><li>
+<p><pre>&lt;IF <var>[</var>NOT<var>]</var> <var>expr</var>&gt; <var>testo1</var> <var>[</var>&lt;ELSE&gt; <var>testo2</var><var>]</var> &lt;/IF&gt;</pre><p>
+
+Inserisce nel buffer <tt><var>testo1</var></tt> se <tt><var>expr</var></tt> &egrave; vera,
+<tt><var>testo2</var></tt> altrimenti (e se presente). Il testo inserito viene
+quindi espanso. Se &egrave; presente l'opzione <tt>NOT</tt>
+il valore di verit&agrave; viene invertito.
+
+<tt><var>expr</var></tt> pu&ograve; essere: <tt><var>name</var></tt> oppure <tt><var>string1</var>=<var>string2</var></tt>. Nel primo caso
+l'espressione &egrave; vera se la variabile <tt><var>name</var></tt> &egrave; stata
+definita. Nel secondo caso vengono confrontate le due stringhe.
+
+<p><li>
+<p><pre>&lt;FOREACH <var>name</var> <var>[val ... ]</var>&gt; <var>testo</var> &lt;/FOREACH&gt;
+</pre><p>
+Per ogni elemento <tt><var>val</var></tt> viene creato un nuovo buffer e un
+nuovo ambiente nel quale la variabile <tt><var>name</var></tt> ha valore
+<tt><var>val</var></tt>. Quindi <tt><var>testo</var></tt> viene espanso e il contenuto
+del buffer viene re-inserito al posto del TAG.
+
+<p><li>
+<p><pre>&lt;ENV <var>[GLOBAL]</var>&gt;</pre><p>
+
+Viene inserita nel buffer una lista della forma <tt><var>name</var>=<var>value</var></tt> di tutte le variabili
+definite nell'ambiente corrente. Se l'opzione <tt>GLOBAL</tt> &egrave;
+presente, vengono inserite anche le variabili degli ambienti pi&ugrave;
+esterni.
+
+<p><li>
+<p><pre>&lt;MESSAGE <var>[[</var>MSG=<var>]message]</var> <var>[</var>ERR=<var>error]</var>&gt;</pre><p>
+Viene riportato sullo stderr il messaggio <var>message</var> o
+l'errore <var>error</var>. Nel caso di un messaggio di errore il
+programma termina.
+
+<p><li>
+<p><pre>&lt;FILE [LITERAL] INPUT<var>[</var>=<var>filename]</var>&gt;
+&lt;FILE OUTPUT<var>[</var>=<var>filename]</var>&gt;</pre><p>
+Nel primo caso viene inserito nel buffer corrente il contenuto del
+file <var>filename</var>. Se <var>filename</var> non viene
+specificato, viene letto lo stdin. Se il primo carattere di
+<var>filename</var> &egrave; il carattere '|', viene eseguito
+<var>filename</var> e viene inserito il suo output.
+In ogni caso il testo appena inserito viene espanso a meno che non sia
+presente l'attributo <var>LITERAL</var>.
+
+Nel secondo caso il contenuto del buffer corrente viene salvato sul
+file <var>filename</var>. Viene usato stdout o l'input di un programma
+in analogia col caso precedente.
+Il buffer salvato viene poi cancellato.
+
+<p><li>
+<p><pre>&lt;STAT <var>[</var>PATH BASE EXT MIN MAX
+FILE=<var>filename</var> DATE FORMAT=<var>format SIZE DIM]</var> &gt;</pre><p>
+
+Vengono inserite nel buffer alcune informazioni sul file
+<var>filename</var>. Se non viene indicato il nome del file, si
+considera il file sorgente <tt>&SourceFile;</tt>.
+Le opzioni <tt>PATH BASE EXT</tt> specificano quali parti del
+nome del file devono essere stampate (rispettivamente il path, il nome
+e l'estensione), mentre <tt>MIN MAX</tt> indicano se l'estensione
+deve essere considerata a partire dall'ultimo '.' o dal primo.
+
+L'opzione <tt>DATE</tt> indica che la data di ultima modifica del
+file dev'essere stampata. Se l'opzione <tt>FILE</tt> non viene
+messa, viene stampata la data corrente. L'opzione <tt>FORMAT</tt> serve per specificare il formato di visualizzazione di
+data e ora, come specificato nelle man-pages del comando <tt>strftime</tt>.
+
+L'opzione <tt>SIZE</tt> stampa la dimensione in bytes del file.
+
+<p><li>
+<p><pre>&lt;CLEAR&gt;</pre><p>
+Tutto il buffer corrente viene cancellato.
+
+<p><li>
+<p><pre>&lt;PROCESS&gt; <var>testo</var> &lt;/PROCESS&gt;</pre><p>
+Viene creato un nuovo buffer con un nuovo ambiente. In questo buffer
+viene copiato <var>testo</var> e viene quindi
+espanso. 
+Se dopo l'espansione il buffer non risulta vuoto, viene generato un
+messaggio di avvertimento e comunque il buffer viene distrutto.
+
+</ul>
+
+<h2> Regole di espansione</h2>
+L'espansione del testo avviene solamente all'occorrenza di uno dei
+caratteri '&lt;', '&' e '$'. 
+Nel caso del carattere '&lt;', il preprocessore, dopo aver saltato
+eventuali spazi bianchi, legge un nome, cio&egrave; una sequenza di
+caratteri alfanumerici, con in aggiunta i caratteri '/', '_' e '-'.
+Se il nome risultante corrisponde ad un comando interno o al nome di
+una macro definita con <tt>DEF</tt>, si procede all'espansione
+delle opzioni del comando o della macro, altrimenti il testo viene lasciato cos&igrave;
+com'&egrave;. 
+Le opzioni sono separate da spazi, e sono formate da un nome e
+opzionalmente un carattere '=' seguito da una stringa. Le stringhe
+sono sequenze di caratteri alfanumerici. Se per&ograve; in una stringa &egrave;
+presente uno dei caratteri '&lt;','&' o '$', tale carattere viene
+espanso a sua volta. Se in una stringa compare un carattere '"', i
+successivi caratteri vengono tutti inseriti nella stringa (anche se
+non alfanumerici) fino al successivo '"'. Se all'interno di una
+stringa "quotata" compare il carattere '\', il carattere successivo
+viene inserito senza essere interpretato in alcun modo.
+ 
+<p>
+Anche nel caso del carattere '&' il preprocessore legge un nome,
+che deve terminare con un carattere ';'. Se il nome corrisponde al
+nome di una variabile, il valore della variabile viene inserito
+altrimenti il testo non viene modificato.
+Il carattere '$' precede anch'esso il nome di una variabile. Il nome
+in questo caso pu&ograve; essere racchiuso tra parentesi graffe. Viene
+fatta quindi l'espansione come nel caso di '&'.
+
+<h2>Riga di comando e file di configurazione</h2>
+Quando viene eseguito, Hpp crea il buffer principale e l'ambiente
+principale. Le opzioni date nella riga di comando vengono quindi
+interpretate in due possibili modi: se sono assegnamenti del tipo <tt><var>var</var>=<var>value</var></tt>, viene creata nell'ambiente
+principale la variabile <tt><var>var</var></tt> con valore <tt><var>value</var></tt>. Le altre opzioni vengono interpretate come
+nomi di files, che vengono memorizzati, separati da spazi, nella
+variabile <tt>&SourceFileList;</tt>.
+A questo punto viene cercato un file da inserire nel buffer che usando
+i comandi del preprocessore si
+dovr&agrave; prendere la responsabilit&agrave; di caricare in successione i
+files indicati nella riga di comando (probabilmente mediante un <tt>&lt;FOREACH file &SourceFileList &gt;</tt>.
+Prima di tutto viene cercato un file chiamato ".hpp" nella directory
+corrente, se questo non esiste viene caricato il file "~/.hpp", se
+neanche questo esiste viene inserito il seguente buffer di default:
+<pre>
+&lt;if sourcefilelist&gt;
+&lt;foreach SourceFile $sourcefilelist&gt;
+&lt;process&gt;
+&lt;set OutputFile=&lt;stat base file=$sourceFile&gt;.html&gt;
+&lt;message \"Processing SourceFile \"$SourceFile&gt;
+&lt;input $SourceFile&gt;
+&lt;message \"   ----&gt; \"$OutputFile&gt;
+&lt;output $OutputFile&gt;
+&lt;/process&gt;
+&lt;/foreach&gt;
+&lt;else&gt;
+&lt;message&gt;
+No files specified.
+try: hpp &lt;hpp-files&gt;
+&lt;/message&gt;
+&lt;output&gt;
+&lt;/if&gt;
+
+</pre>
+
+
+
+
+
+<hr>
+<div align=right bgcolor="#0000ff">
+<a href="http://web.math.unifi.it/users/paolini/"><img src="http://web.math.unifi.it/users/paolini/home.png" alt=Home border=0></a><a href="../"><img src="http://web.math.unifi.it/users/paolini/up.png" alt=Up border=0></a><a href="http://web.math.unifi.it/users/paolini/help/"><img src="http://web.math.unifi.it/users/paolini/help.png" alt="Aiuto!" border=0></a>
+  
+    <img src="http://web.math.unifi.it/users/paolini/it.png" alt="it"; border=0>
+  
+
+</div>
+
+<emph>
+
+Ultima modifica: 17 07 2010
+
+</body>

@@ -1,0 +1,15 @@
+Source: hpp
+Section: unknown
+Priority: optional
+Maintainer: Emanuele Paolini <manu@vega>
+Build-Depends: debhelper (>= 4.0.0)
+Standards-Version: 3.6.0
+
+Package: hpp
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: hpp is a simple text preprocessor
+ Hpp is a simple text preprocessor
+
+
+
